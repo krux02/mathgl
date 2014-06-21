@@ -1,5 +1,9 @@
 package mgl64
 
+import "fmt"
+import "text/tabwriter"
+import "bytes"
+
 // Sets a Column within the Matrix, so it mutates the calling matrix.
 func (m *Mat2) SetCol(col int, v Vec2) {
 	m[col*2+0], m[col*2+1] = v[0], v[1]
@@ -106,6 +110,24 @@ func (m Mat3) Diag() Vec3 {
 // sums up all elements on the main diagonal (meaning all elements such that row==col).
 func (m Mat4) Diag() Vec4 {
 	return Vec4{m[0], m[5], m[10], m[15]}
+}
+
+func (m Mat4) String() string {
+
+	buff := bytes.NewBuffer(nil)
+	writer := tabwriter.NewWriter(buff, 8, 4, 0, ' ', tabwriter.AlignRight)
+
+	for row := 0; row < 4; row++ {
+		for col := 0; col < 4; col++ {
+			fmt.Fprintf(writer, "%3.3f\t", m.At(row, col))
+		}
+		fmt.Fprintln(writer)
+	}
+	writer.Flush()
+
+	str, _ := buff.ReadString(0)
+
+	return str
 }
 
 /*
